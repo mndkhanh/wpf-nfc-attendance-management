@@ -1,0 +1,95 @@
+# ========================================================
+# GENERAL
+# ========================================================
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+*.tmp
+
+# VS Code (Tùy chọn: có thể giữ lại settings.json nếu cần share cấu hình)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ========================================================
+# .NET / WPF
+# ========================================================
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+TestResults/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet / Packages
+*.nupkg
+[Pp]ackages/
+!packages/build/
+[Oo]ut/
+.nuget/
+
+# Đôi khi Entity Framework sinh file local db
+*.mdf
+*.ldf
+
+# ========================================================
+# FLUTTER / DART
+# ========================================================
+# Flutter/Dart/Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Mobile Tools
+.gradle/
+local.properties
+
+# Android
+flutter_app_nfc_scanner/android/key.properties
+flutter_app_nfc_scanner/android/local.properties
+flutter_app_nfc_scanner/android/app/build/
+flutter_app_nfc_scanner/android/build/
+flutter_app_nfc_scanner/android/.gradle/
+
+# iOS
+flutter_app_nfc_scanner/ios/Flutter/App.framework
+flutter_app_nfc_scanner/ios/Flutter/Flutter.framework
+flutter_app_nfc_scanner/ios/Flutter/Generated.xcconfig
+flutter_app_nfc_scanner/ios/Flutter/app.flx
+flutter_app_nfc_scanner/ios/Flutter/app.zip
+flutter_app_nfc_scanner/ios/Flutter/flutter_assets/
+flutter_app_nfc_scanner/ios/Flutter/flutter_export_environment.sh
+flutter_app_nfc_scanner/ios/Pods/
+
+# Web, macOS, Windows, Linux build folders
+flutter_app_nfc_scanner/windows/flutter/ephemeral/
+flutter_app_nfc_scanner/macos/Flutter/ephemeral/
+flutter_app_nfc_scanner/linux/flutter/ephemeral/
