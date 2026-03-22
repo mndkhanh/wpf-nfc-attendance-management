@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "711285835386",
+    "project_id": "wpf-nfc-attendance-management",
+    "storage_bucket": "wpf-nfc-attendance-management.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711285835386:android:e8a3115dfae30b20131dc3",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app_nfc_scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl7sqRVNTnUgJEgT-wl7VqAshHXcF4YKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

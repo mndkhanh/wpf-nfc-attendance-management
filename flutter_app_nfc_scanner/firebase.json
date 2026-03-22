@@ -1,0 +1,21 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "wpf-nfc-attendance-management",
+                    "appId": "1:711285835386:android:e8a3115dfae30b20131dc3",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "wpf-nfc-attendance-management",
+                    "configurations": {
+                        "android": "1:711285835386:android:e8a3115dfae30b20131dc3"
+                    }
+                }
+            }
+        }
+    }
+}
