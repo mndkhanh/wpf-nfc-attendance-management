@@ -1,12 +1,151 @@
-﻿<Window x:Class="WPF.MainWindow"
+<Window x:Class="WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="CLB Võ Kudo"
+        Width="1440"
+        Height="900"
+        MinWidth="1220"
+        MinHeight="760"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBackgroundBrush}">
     <Grid>
+        <Border Margin="32"
+                Background="{StaticResource SurfaceBrush}"
+                CornerRadius="30">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
+                <Border Grid.Column="0"
+                        Background="{StaticResource SidebarBrush}"
+                        CornerRadius="30,0,0,30">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="CLB VÕ KUDO"
+                                       FontSize="30"
+                                       FontWeight="Bold"
+                                       Foreground="White" />
+                            <Border Height="2"
+                                    Margin="0,18,18,24"
+                                    Background="#55FFFFFF" />
+
+                            <Button x:Name="AttendanceNavButton"
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource SidebarNavButtonStyle}"
+                                    Click="AttendanceNavButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,12,0"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               Text="&#xE823;" />
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="Điểm danh" />
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="MembersNavButton"
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource SidebarNavButtonStyle}"
+                                    Click="MembersNavButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,12,0"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               Text="&#xE77B;" />
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="Thành viên" />
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="FinanceNavButton"
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource SidebarNavButtonStyle}"
+                                    Click="FinanceNavButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,12,0"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               Text="&#xEAFD;" />
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="Tài chính" />
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="DashboardNavButton"
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource SidebarNavButtonStyle}"
+                                    Click="DashboardNavButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,12,0"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               Text="&#xF246;" />
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="Dashboard" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <Button x:Name="SettingsNavButton"
+                                Grid.Row="2"
+                                Style="{StaticResource SidebarNavButtonStyle}"
+                                Click="SettingsNavButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="0,0,12,0"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16"
+                                           Text="&#xE713;" />
+                                <TextBlock VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Text="Cài đặt" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Column="1" Margin="24,18,24,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Margin="0,0,0,14">
+                        <Button Style="{StaticResource IconButtonStyle}"
+                                Content="&#xE700;" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button Style="{StaticResource IconButtonStyle}"
+                                    Content="&#xE7ED;" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Border Grid.Row="1"
+                            Background="{StaticResource ContentPanelBrush}"
+                            CornerRadius="24"
+                            Padding="22">
+                        <ContentControl x:Name="MainContentHost" />
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
