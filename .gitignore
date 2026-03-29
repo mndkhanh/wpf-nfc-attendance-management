@@ -93,3 +93,5 @@ flutter_app_nfc_scanner/ios/Pods/
 flutter_app_nfc_scanner/windows/flutter/ephemeral/
 flutter_app_nfc_scanner/macos/Flutter/ephemeral/
 flutter_app_nfc_scanner/linux/flutter/ephemeral/
+
+WPF/appsettings.json
