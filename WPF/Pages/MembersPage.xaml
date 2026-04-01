@@ -91,10 +91,10 @@
                         </Button>
                     </StackPanel>
                 </Border>
-                <Button Height="40"
-                        Padding="18,0"
+                <Button x:Name="AddMemberButton"
                         Style="{StaticResource AccentButtonStyle}"
                         Click="AddMemberButton_Click"
+                        Width="150"
                         Content="+ Đăng ký thành viên" />
             </StackPanel>
         </Grid>

@@ -100,7 +100,7 @@
                                    Text="Thông báo" />
                         <TextBlock Margin="0,16,0,0"
                                    Foreground="{StaticResource MutedBrush}"
-                                   Text="Template này đang tập trung dựng layout mẫu, chưa nối dữ liệu thật." />
+                                   Text="" />
                     </StackPanel>
                 </Border>
             </StackPanel>

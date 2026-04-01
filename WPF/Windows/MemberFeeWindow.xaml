@@ -125,6 +125,8 @@
         <Button Grid.Row="6"
                 Click="ConfirmButton_Click"
                 HorizontalAlignment="Right"
+                Width="100"
+                Height="30"
                 Style="{StaticResource PopupActionButtonStyle}"
                 Content="Xác nhận" />
     </Grid>

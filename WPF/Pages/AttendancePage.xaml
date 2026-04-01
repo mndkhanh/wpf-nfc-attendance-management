@@ -31,6 +31,8 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"
                     Click="StartSessionButton_Click"
+                    Width="200"
+                    Height="30"
                     Content="Bắt đầu buổi điểm danh" />
         </Grid>
 
@@ -78,15 +80,6 @@
                         <DataGridTextColumn Width="170" Header="Bắt đầu" Binding="{Binding StartTime, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" />
                         <DataGridTextColumn Width="130" Header="Trạng thái" Binding="{Binding Status}" />
                         <DataGridTextColumn Width="110" Header="Đã check-in" Binding="{Binding Attendances.Count}" />
-                        <DataGridTemplateColumn Width="140" Header="Chi tiết">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Padding="12,6"
-                                            Style="{StaticResource SecondaryButtonStyle}"
-                                            Content="Xem" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

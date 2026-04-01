@@ -8,7 +8,6 @@
         <Style x:Key="FinanceActionButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource AccentButtonStyle}">
-            <Setter Property="Padding" Value="14,7" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="MinWidth" Value="74" />
@@ -57,11 +56,12 @@
                 <TextBlock x:Name="TotalBalanceRun"
                FontWeight="SemiBold"
                Foreground="{StaticResource SuccessBrush}"
-               Text="+ 8.200.000" />
+               Text="" />
             </StackPanel>
 
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
+                        Height="30"
                         VerticalAlignment="Top">
                 <Button Style="{StaticResource FinanceActionButtonStyle}"
                         Click="AddIncomeButton_Click"
@@ -72,6 +72,7 @@
                 <Button Margin="0"
                         Style="{StaticResource FinanceActionButtonStyle}"
                         Click="AddMemberFeeButton_Click"
+                        Width="150"
                         Content="+ Thu phí thành viên" />
             </StackPanel>
         </Grid>
@@ -125,9 +126,6 @@
                     <TextBlock FontWeight="Bold"
                                Foreground="#3A3535"
                                Text="Danh sách các tài khoản mục tài chính" />
-                    <TextBlock Margin="0,6,0,0"
-                               Foreground="#3A3535"
-                               Text="Bao gồm cả thu và chi. Khoản thu hiển thị dấu +, khoản chi hiển thị dấu -" />
                 </StackPanel>
 
                 <DataGrid x:Name="FinanceGrid"

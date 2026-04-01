@@ -28,31 +28,25 @@
                        FontSize="28"
                        FontWeight="Bold"
                        Foreground="#201C1C"
-                       Text="Buổi điểm danh: tập luyện buổi chiều" />
+                       Text="Buổi điểm danh:" />
 
             <Button Grid.Column="1"
-                    Padding="24,12"
-                    Background="#8B1D1D"
-                    Foreground="White"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    BorderThickness="0"
-                    Cursor="Hand"
-                    Click="FinishSessionButton_Click">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock FontFamily="Segoe MDL2 Assets" 
-                                           Text="&#xEF3B;" 
-                                           Margin="0,0,10,0" 
-                                           VerticalAlignment="Center"/>
-                                <ContentPresenter />
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-                Kết thúc buổi điểm danh
+                Style="{StaticResource AccentButtonStyle}"
+                Click="FinishSessionButton_Click"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                HorizontalContentAlignment="Center" 
+                Padding="0,0"
+                Width="200"
+                Height="30">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+                    <TextBlock FontFamily="Segoe MDL2 Assets" 
+                   Text="&#xEF3B;" 
+                   Margin="0,0,10,0" 
+                   VerticalAlignment="Center"/>
+                    <TextBlock Text="Kết thúc buổi điểm danh" 
+                   VerticalAlignment="Center"/>
+                </StackPanel>
             </Button>
         </Grid>
 
@@ -88,8 +82,6 @@
                 <!-- Student Info Section -->
                 <Border Background="White"
                         CornerRadius="18"
-                        BorderBrush="#E6DEDA"
-                        BorderThickness="1"
                         Padding="24"
                         Margin="0,0,0,16">
                     <StackPanel>
@@ -97,7 +89,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="#352F2F"
                                    Text="Thông tin sinh viên" />
-                        
+
                         <Border Width="140"
                                 Height="140"
                                 Margin="0,24,0,16"
@@ -110,25 +102,25 @@
                                        Text="&#xE77B;" 
                                        Foreground="#6E6764"/>
                         </Border>
-                        
+
                         <TextBlock x:Name="StudentNameText"
                                    FontSize="22"
                                    FontWeight="Bold"
-                                   Text="Nguyễn Văn An"
+                                   Text=""
                                    HorizontalAlignment="Center" />
-                        
+
                         <TextBlock x:Name="StudentCodeText"
                                    Margin="0,4,0,0"
                                    FontSize="16"
                                    Foreground="#6E6764"
-                                   Text="SE150111"
+                                   Text=""
                                    HorizontalAlignment="Center" />
-                        
+
                         <TextBlock x:Name="NfcUidText"
                                    Margin="0,16,0,0"
                                    FontSize="14"
                                    Foreground="#6E6764"
-                                   Text="UID: 04:4B:2A:82:C7:5E:80"
+                                   Text=""
                                    HorizontalAlignment="Center" />
                     </StackPanel>
                 </Border>
@@ -146,7 +138,7 @@
                 </Border>
             </StackPanel>
         </Grid>
-
+        
         <!-- DEBUG: Firebase status bar -->
         <Border Grid.Row="3" Margin="0,16,0,0" Background="#1E1E1E" CornerRadius="8" Padding="12,8">
             <TextBlock x:Name="NfcStatusText"

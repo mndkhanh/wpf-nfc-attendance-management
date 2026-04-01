@@ -45,6 +45,7 @@
                              Style="{StaticResource InputTextBoxStyle}"
                              Text="Môi trường tập luyện, điểm danh và quản lý tài chính cho một CLB duy nhất." />
                     <Button Width="140"
+                            Height="30"
                             HorizontalAlignment="Left"
                             Style="{StaticResource AccentButtonStyle}"
                             Content="Lưu thay đổi" />
@@ -69,17 +70,13 @@
                 <Border Style="{StaticResource CardBorderStyle}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource SectionTitleStyle}"
-                                   Text="Thiết bị NFC / Firebase" />
+                                   Text="Đồng bộ dữ liệu" />
                         <TextBlock Margin="0,16,0,0"
                                    Style="{StaticResource LabelTextStyle}"
-                                   Text="Trạng thái lắng nghe" />
-                        <TextBlock Foreground="{StaticResource SuccessBrush}"
-                                   Text="Đang sẵn sàng kết nối" />
+                                   Text="Đồng bộ USB" />
                         <TextBlock Margin="0,16,0,0"
                                    Style="{StaticResource LabelTextStyle}"
-                                   Text="Key realtime hiện tại" />
-                        <TextBox Style="{StaticResource InputTextBoxStyle}"
-                                 Text="current_uid" />
+                                   Text="Đồng bộ qua file" />
                     </StackPanel>
                 </Border>
             </StackPanel>

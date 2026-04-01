@@ -91,6 +91,8 @@
                 Click="ConfirmButton_Click"
                 HorizontalAlignment="Right"
                 Style="{StaticResource PopupActionButtonStyle}"
+                Width="100"
+                Height="30"
                 Content="Xác nhận" />
     </Grid>
 </Window>

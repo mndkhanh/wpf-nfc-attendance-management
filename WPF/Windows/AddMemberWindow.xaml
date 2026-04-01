@@ -72,16 +72,19 @@
 
                     <Button x:Name="SelectPhotoButton"
                             Margin="0,14,0,8"
+                            Height="30"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Click="SelectPhotoButton_Click"
                             Content="Chọn file ảnh" />
                     <Button x:Name="CameraModeButton"
                             Margin="0,0,0,8"
+                            Height="30"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Click="CameraModeButton_Click"
                             Content="Chụp từ Camera" />
                     <Button x:Name="RemovePhotoButton"
-                            Style="{StaticResource SecondaryButtonStyle}"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Height="30"
                             Click="RemovePhotoButton_Click"
                             Content="Xóa ảnh"
                             IsEnabled="False" />
@@ -165,6 +168,7 @@
                         IsCancel="True" />
                 <Button x:Name="ConfirmButton"
                         Width="120"
+                        Height="30"
                         Style="{StaticResource AccentButtonStyle}"
                         Content="Xác nhận"
                         Click="ConfirmButton_Click" />

@@ -48,6 +48,7 @@
                         IsCancel="True" />
                 <Button x:Name="ConfirmButton"
                         Width="120"
+                        Height="30"
                         Style="{StaticResource AccentButtonStyle}"
                         Content="Xác nhận"
                         Click="ConfirmButton_Click" />
