@@ -51,34 +51,39 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock FontSize="18"
+                            <TextBlock x:Name="SelectedSessionNameText"
+                                       FontSize="18"
                                        FontWeight="SemiBold"
-                                       Text="Buổi điểm danh: Tập luyện buổi chiều" />
-                            <TextBlock Margin="0,6,0,0"
+                                       Text="Chọn một buổi điểm danh bên dưới" />
+                            <TextBlock x:Name="SelectedSessionTopicText"
+                                       Margin="0,6,0,0"
                                        Foreground="{StaticResource MutedBrush}"
-                                       Text="Khởi động, kỹ thuật cơ bản, đối kháng nhẹ" />
+                                       Text="Thông tin chi tiết về buổi tập sẽ hiện ở đây" />
                         </StackPanel>
-                        <Button Grid.Column="1"
+                        <Button x:Name="SessionInfoButton"
+                                Grid.Column="1"
                                 Style="{StaticResource SecondaryButtonStyle}"
-                                Content="Xem thông tin" />
+                                Content="Xem thông tin"
+                                Visibility="Collapsed" />
                     </Grid>
                 </Border>
 
                 <DataGrid x:Name="SessionsGrid"
                           Grid.Row="1"
-                          Style="{StaticResource AppDataGridStyle}">
+                          Style="{StaticResource AppDataGridStyle}"
+                          SelectionChanged="SessionsGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="240" Header="Buổi điểm danh" Binding="{Binding SessionName}" />
                         <DataGridTextColumn Width="290" Header="Chủ đề" Binding="{Binding Topic}" />
-                        <DataGridTextColumn Width="170" Header="Bắt đầu" Binding="{Binding StartTime}" />
+                        <DataGridTextColumn Width="170" Header="Bắt đầu" Binding="{Binding StartTime, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" />
                         <DataGridTextColumn Width="130" Header="Trạng thái" Binding="{Binding Status}" />
-                        <DataGridTextColumn Width="110" Header="Đã check-in" Binding="{Binding AttendeeCount}" />
+                        <DataGridTextColumn Width="110" Header="Đã check-in" Binding="{Binding Attendances.Count}" />
                         <DataGridTemplateColumn Width="140" Header="Chi tiết">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Padding="12,6"
                                             Style="{StaticResource SecondaryButtonStyle}"
-                                            Content="Xem thông tin" />
+                                            Content="Xem" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -105,20 +110,25 @@
                     <StackPanel>
                         <TextBlock Style="{StaticResource SectionTitleStyle}"
                                    Text="Danh sách sinh viên đã điểm danh" />
-                        <TextBlock Margin="0,6,0,0"
+                        <TextBlock x:Name="AttendeeListHeaderText"
+                                   Margin="0,6,0,0"
                                    Foreground="{StaticResource MutedBrush}"
-                                   Text="Buổi điểm danh: tập luyện buổi chiều" />
+                                   Text="Chọn buổi tập để xem danh sách" />
                     </StackPanel>
 
                     <Button Grid.Column="1"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
                             Style="{StaticResource SecondaryButtonStyle}"
-                            Content="Quay lại" />
-                    <Button Grid.Column="2"
+                            Content="Quay lại" 
+                            Visibility="Collapsed"/>
+                    <Button x:Name="FinishSessionButton"
+                            Grid.Column="2"
                             VerticalAlignment="Center"
                             Style="{StaticResource AccentButtonStyle}"
-                            Content="Kết thúc buổi điểm danh" />
+                            Content="Kết thúc buổi điểm danh" 
+                            Visibility="Collapsed"
+                            Click="FinishSessionButton_Click" />
                 </Grid>
 
                 <Grid Grid.Row="1"
@@ -130,21 +140,22 @@
                     </Grid.ColumnDefinitions>
 
                     <DataGrid x:Name="AttendanceGrid"
-                              Grid.Column="0"
-                              Style="{StaticResource AppDataGridStyle}">
+                               Grid.Column="0"
+                               Style="{StaticResource AppDataGridStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="110" Header="MSSV" Binding="{Binding StudentCode}" />
                             <DataGridTextColumn Width="200" Header="Họ và tên" Binding="{Binding FullName}" />
-                            <DataGridTextColumn Width="90" Header="Giờ vào" Binding="{Binding CheckInTime}" />
-                            <DataGridTextColumn Width="110" Header="Phương thức" Binding="{Binding Method}" />
+                            <DataGridTextColumn Width="120" Header="Giờ vào" Binding="{Binding CheckInTime, StringFormat=\{0:HH:mm:ss\}}" />
                             <DataGridTextColumn Width="170" Header="Ghi chú" Binding="{Binding Note}" />
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <StackPanel Grid.Column="2">
-                        <Border Style="{StaticResource CardBorderStyle}"
+                        <Border x:Name="StudentInfoCard"
+                                Style="{StaticResource CardBorderStyle}"
                                 Padding="16"
-                                Margin="0,10,0,12">
+                                Margin="0,10,0,12"
+                                Visibility="Collapsed">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource SectionTitleStyle}"
                                            Text="Thông tin sinh viên" />
@@ -152,14 +163,14 @@
                                         Height="110"
                                         Margin="0,16,0,12"
                                         Background="{StaticResource LightMutedBrush}"
-                                        CornerRadius="14" />
-                                <TextBlock FontWeight="Bold"
-                                           Text="Nguyễn Văn An" />
-                                <TextBlock Margin="0,4,0,0"
-                                           Foreground="{StaticResource MutedBrush}"
-                                           Text="SE150111" />
-                                <TextBlock Margin="0,10,0,0"
-                                           Text="NFC: 04:4B:2A:82:C7:5E:80" />
+                                        CornerRadius="14">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                               FontFamily="Segoe MDL2 Assets" FontSize="48" Text="&#xE77B;" 
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                                <TextBlock x:Name="StudentNameText" FontWeight="Bold" />
+                                <TextBlock x:Name="StudentCodeText" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}" />
+                                <TextBlock x:Name="StudentNfcText" Margin="0,10,0,0" FontSize="11" />
                             </StackPanel>
                         </Border>
 
@@ -167,10 +178,11 @@
                                 Padding="16">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource SectionTitleStyle}"
-                                           Text="Ghi chú phiên điểm danh" />
-                                <TextBlock Margin="0,14,0,0"
+                                           Text="Thống kê" />
+                                <TextBlock x:Name="SessionStatsText"
+                                           Margin="0,14,0,0"
                                            Foreground="{StaticResource MutedBrush}"
-                                           Text="Thêm 1 section cho tài chính / thống kê sau này." />
+                                           Text="Tổng số: 0 sinh viên" />
                             </StackPanel>
                         </Border>
                     </StackPanel>

@@ -7,8 +7,9 @@
         <SolidColorBrush x:Key="AppBackgroundBrush" Color="#201C1C" />
         <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFDFB" />
         <SolidColorBrush x:Key="ContentPanelBrush" Color="#FFF9F6" />
-        <SolidColorBrush x:Key="SidebarBrush" Color="#991717" />
-        <SolidColorBrush x:Key="SidebarActiveBrush" Color="#C88686" />
+        <SolidColorBrush x:Key="SidebarBrush" Color="#8B1D1D" />
+        <SolidColorBrush x:Key="SidebarActiveBrush" Color="#A13333" />
+        <SolidColorBrush x:Key="SidebarHoverBrush" Color="#9B2828" />
         <SolidColorBrush x:Key="AccentBrush" Color="#A11919" />
         <SolidColorBrush x:Key="AccentHoverBrush" Color="#B82323" />
         <SolidColorBrush x:Key="BorderBrush" Color="#E6DEDA" />
@@ -96,7 +97,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.92" />
+                    <Setter Property="Background" Value="{StaticResource SidebarHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SidebarActiveBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -125,6 +129,43 @@
                     <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="HeaderSearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Width" Value="320" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="#F5F2F0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="19">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="Center" />
+                                <TextBlock x:Name="placeholder"
+                                           Text="Tìm kiếm..."
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           Margin="14,0"
+                                           IsHitTestVisible="False"
+                                           Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="placeholder" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Background" Value="#EBE7E5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="InputTextBoxStyle" TargetType="TextBox">

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Bắt đầu buổi điểm danh"
         Width="520"
-        Height="340"
+        Height="400"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Background="#D8D1CC">
@@ -15,41 +15,43 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Style="{StaticResource SectionTitleStyle}"
                        Text="Tạo buổi điểm danh" />
 
-            <TextBlock Grid.Row="1"
-                       Margin="0,20,0,6"
-                       Style="{StaticResource LabelTextStyle}"
-                       Text="Tên buổi điểm danh" />
-            <TextBox Grid.Row="1"
-                     Margin="0,30,0,0"
-                     Style="{StaticResource InputTextBoxStyle}"
-                     Text="Tên buổi điểm danh" />
+            <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                <TextBlock Style="{StaticResource LabelTextStyle}"
+                           Text="Tên buổi điểm danh" />
+                <TextBox x:Name="SessionNameTextBox"
+                         Style="{StaticResource InputTextBoxStyle}" />
+            </StackPanel>
 
-            <TextBlock Grid.Row="2"
-                       Margin="0,12,0,6"
-                       Style="{StaticResource LabelTextStyle}"
-                       Text="Chi tiết" />
-            <TextBox Grid.Row="2"
-                     Margin="0,24,0,0"
-                     Height="90"
-                     AcceptsReturn="True"
-                     TextWrapping="Wrap"
-                     VerticalContentAlignment="Top"
-                     Style="{StaticResource InputTextBoxStyle}"
-                     Text="Chi tiết: description ... blabla" />
+            <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                <TextBlock Style="{StaticResource LabelTextStyle}"
+                           Text="Nội dung / Chủ đề" />
+                <TextBox x:Name="TopicTextBox"
+                         Height="120"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalContentAlignment="Top"
+                         Style="{StaticResource InputTextBoxStyle}" />
+            </StackPanel>
 
-            <Button Grid.Row="3"
-                    Width="120"
-                    Margin="0,18,0,0"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Content="Xác nhận" />
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Width="110"
+                        Margin="0,0,12,0"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Content="Hủy"
+                        IsCancel="True" />
+                <Button x:Name="ConfirmButton"
+                        Width="120"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Content="Xác nhận"
+                        Click="ConfirmButton_Click" />
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

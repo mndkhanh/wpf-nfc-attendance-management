@@ -112,12 +112,24 @@ public partial class FinancePage : UserControl
             RefreshRecentTransactions();
             UpdateTotalBalance();
 
-            MessageBox.Show(
-                Window.GetWindow(this),
-                $"Không tải được dữ liệu tài chính từ cơ sở dữ liệu.\n{ex.Message}",
-                "Lỗi dữ liệu tài chính",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            var owner = Window.GetWindow(this);
+            if (owner != null)
+            {
+                MessageBox.Show(
+                    owner,
+                    $"Không tải được dữ liệu tài chính từ cơ sở dữ liệu.\n{ex.Message}",
+                    "Lỗi dữ liệu tài chính",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Không tải được dữ liệu tài chính từ cơ sở dữ liệu.\n{ex.Message}",
+                    "Lỗi dữ liệu tài chính",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 
@@ -148,12 +160,24 @@ public partial class FinancePage : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                Window.GetWindow(this),
-                $"Không lưu được giao dịch tài chính.\n{ex.Message}",
-                "Lỗi lưu dữ liệu",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            var owner = Window.GetWindow(this);
+            if (owner != null)
+            {
+                MessageBox.Show(
+                    owner,
+                    $"Không lưu được giao dịch tài chính.\n{ex.Message}",
+                    "Lỗi lưu dữ liệu",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Không lưu được giao dịch tài chính.\n{ex.Message}",
+                    "Lỗi lưu dữ liệu",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 

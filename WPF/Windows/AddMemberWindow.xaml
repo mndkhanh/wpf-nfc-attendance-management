@@ -19,7 +19,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Style="{StaticResource SectionTitleStyle}"
-                       Text="Đăng ký thành viên" />
+                       Text="Đăng ký thành viên mới" />
 
             <Grid Grid.Row="1"
                   Margin="0,20,0,16">
@@ -32,7 +32,14 @@
                 <Border Width="140"
                         Height="180"
                         Background="{StaticResource LightMutedBrush}"
-                        CornerRadius="16" />
+                        CornerRadius="16">
+                    <TextBlock HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               Foreground="{StaticResource MutedBrush}"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="48" 
+                               Text="&#xE77B;" />
+                </Border>
 
                 <Grid Grid.Column="2">
                     <Grid.ColumnDefinitions>
@@ -48,31 +55,41 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Style="{StaticResource LabelTextStyle}" Text="Tên" />
-                    <TextBox Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Nhập họ và tên" />
+                    <TextBlock Style="{StaticResource LabelTextStyle}" Text="Họ và tên" />
+                    <TextBox x:Name="FullNameTextBox" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" />
 
-                    <TextBlock Grid.Row="1" Style="{StaticResource LabelTextStyle}" Text="NFC" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Hãy tap thẻ NFC" />
+                    <TextBlock Grid.Row="1" Style="{StaticResource LabelTextStyle}" Text="Mã số sinh viên (MSSV)" />
+                    <TextBox x:Name="StudentCodeTextBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" />
 
-                    <TextBlock Grid.Row="2" Style="{StaticResource LabelTextStyle}" Text="MSSV" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Nhập MSSV" />
+                    <TextBlock Grid.Row="2" Style="{StaticResource LabelTextStyle}" Text="Mã thẻ NFC (UID)" />
+                    <TextBox x:Name="NfcUidTextBox" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" />
 
-                    <TextBlock Grid.Row="3" Style="{StaticResource LabelTextStyle}" Text="Ảnh" />
-                    <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Link ảnh" />
+                    <TextBlock Grid.Row="3" Style="{StaticResource LabelTextStyle}" Text="Số điện thoại" />
+                    <TextBox x:Name="PhoneTextBox" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" />
 
-                    <TextBlock Grid.Row="4" Style="{StaticResource LabelTextStyle}" Text="Số điện thoại" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Nhập số điện thoại" />
+                    <TextBlock Grid.Row="4" Style="{StaticResource LabelTextStyle}" Text="Email" />
+                    <TextBox x:Name="EmailTextBox" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" />
 
-                    <TextBlock Grid.Row="5" Style="{StaticResource LabelTextStyle}" Text="Ghi chú" />
-                    <TextBox Grid.Row="5" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Text="Thông tin bổ sung" />
+                    <TextBlock Grid.Row="5" Style="{StaticResource LabelTextStyle}" Text="Trạng thái" />
+                    <ComboBox x:Name="StatusComboBox" Grid.Row="5" Grid.Column="1" Style="{StaticResource InputComboBoxStyle}" SelectedIndex="0">
+                        <ComboBoxItem Content="Active" />
+                        <ComboBoxItem Content="Inactive" />
+                    </ComboBox>
                 </Grid>
             </Grid>
 
-            <Button Grid.Row="2"
-                    Width="120"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Content="Xác nhận" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Width="110"
+                        Margin="0,0,12,0"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Content="Hủy"
+                        IsCancel="True" />
+                <Button x:Name="ConfirmButton"
+                        Width="120"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Content="Xác nhận"
+                        Click="ConfirmButton_Click" />
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

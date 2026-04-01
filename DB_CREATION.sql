@@ -29,7 +29,7 @@ CREATE TABLE dbo.Students (
     NFC_UID VARCHAR(100) NULL UNIQUE,         -- Mã thẻ NFC (Trống nếu chưa phát thẻ)
     Phone VARCHAR(20) NULL,
     Email VARCHAR(100) NULL,
-    [Status] NVARCHAR(50) DEFAULT N'Active',  -- Trạng thái: Active, Inactive, Graduated...
+    [Status] NVARCHAR(50) DEFAULT N'Active',  -- Trạng thái: Active, Inactive, ...
     JoinedDate DATE DEFAULT GETDATE(),
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE()
