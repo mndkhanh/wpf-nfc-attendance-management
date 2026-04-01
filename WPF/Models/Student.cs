@@ -17,6 +17,8 @@ public partial class Student
 
     public string? Email { get; set; }
 
+    public string? PhotoPath { get; set; }
+
     public string? Status { get; set; }
 
     public DateOnly? JoinedDate { get; set; }
