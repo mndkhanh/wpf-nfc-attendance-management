@@ -13,6 +13,10 @@ public partial class AttendancePage : UserControl
     public AttendancePage()
     {
         InitializeComponent();
+    }
+
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
         LoadSessions();
     }
 
@@ -66,7 +70,6 @@ public partial class AttendancePage : UserControl
         if (SessionsGrid.SelectedItem is AttendanceSession selectedSession)
         {
             SelectedSessionNameText.Text = $"Buổi điểm danh: {selectedSession.SessionName}";
-            SelectedSessionTopicText.Text = selectedSession.Topic ?? "Không có nội dung chi tiết";
             AttendeeListHeaderText.Text = $"Danh sách sinh viên đã điểm danh ({selectedSession.SessionName})";
             
             LoadAttendance(selectedSession.SessionId);

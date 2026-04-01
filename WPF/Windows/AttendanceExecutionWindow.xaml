@@ -6,46 +6,49 @@
         mc:Ignorable="d"
         Title="Bắt đầu điểm danh"
         WindowState="Maximized"
-        Background="#F5F5F7" 
-        Width="1200" Height="800"
-        MinWidth="1000" MinHeight="700">
-    <Grid Margin="32" Background="#F5F5F7">
+        Width="1200"
+        Height="800"
+        MinWidth="1000"
+        MinHeight="700">
+    <Grid Margin="32"
+            Background="#FFFFFF">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="32" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header Area -->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="SessionTitleText"
                        FontSize="28"
                        FontWeight="Bold"
                        Foreground="#201C1C"
-                       Text="Buổi điểm danh:" />
+                       Text="Buổi điểm danh:"/>
 
             <Button Grid.Column="1"
-                Style="{StaticResource AccentButtonStyle}"
-                Click="FinishSessionButton_Click"
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Center" 
-                Padding="0,0"
-                Width="200"
-                Height="30">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-                    <TextBlock FontFamily="Segoe MDL2 Assets" 
-                   Text="&#xEF3B;" 
-                   Margin="0,0,10,0" 
-                   VerticalAlignment="Center"/>
-                    <TextBlock Text="Kết thúc buổi điểm danh" 
-                   VerticalAlignment="Center"/>
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="FinishSessionButton_Click"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Padding="0,0"
+                    Width="200"
+                    Height="30">
+                <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                               Text="&#xEF3B;"
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Kết thúc buổi điểm danh"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -53,9 +56,9 @@
         <!-- Main Body Area -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5*" />
-                <ColumnDefinition Width="32" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Left: Attendance DataGrid -->
@@ -67,85 +70,186 @@
                     Padding="8">
                 <DataGrid x:Name="LiveAttendanceGrid"
                           Style="{DynamicResource AppDataGridStyle}"
-                          Margin="0">
+                          Margin="0"
+                          IsReadOnly="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          CellEditEnding="LiveAttendanceGrid_CellEditEnding" SelectionChanged="LiveAttendanceGrid_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="120" Header="MSSV" Binding="{Binding StudentCode}" />
-                        <DataGridTextColumn Width="240" Header="Họ và tên" Binding="{Binding FullName}" />
-                        <DataGridTextColumn Width="120" Header="Giờ vào" Binding="{Binding CheckInTime, StringFormat=\{0:HH:mm:ss\}}" />
-                        <DataGridTextColumn Width="*" Header="Ghi chú" Binding="{Binding Note}" />
+                        <DataGridTextColumn Width="120"
+                                Header="MSSV"
+                                Binding="{Binding Student.StudentCode}"
+                                IsReadOnly="True"/>
+                        <DataGridTextColumn Width="240"
+                                Header="Họ và tên"
+                                Binding="{Binding Student.FullName}"
+                                IsReadOnly="True"/>
+                        <DataGridTextColumn Width="120"
+                                Header="Giờ vào"
+                                Binding="{Binding CheckInTime, StringFormat=\{0:HH:mm:ss\}}"
+                                IsReadOnly="True"/>
+                        <DataGridTextColumn Width="*"
+                                Header="Ghi chú"
+                                Binding="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
 
-            <!-- Right: Info Panel -->
-            <StackPanel Grid.Column="2">
-                <!-- Student Info Section -->
-                <Border Background="White"
-                        CornerRadius="18"
-                        Padding="24"
-                        Margin="0,0,0,16">
-                    <StackPanel>
-                        <TextBlock FontSize="20"
-                                   FontWeight="SemiBold"
-                                   Foreground="#352F2F"
-                                   Text="Thông tin sinh viên" />
+            <!-- Right: Info Panel (Scrollable) -->
+            <ScrollViewer Grid.Column="2" 
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Student Info Section -->
+                    <Border Background="White"
+                            CornerRadius="18"
+                            Padding="24"
+                            Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Foreground="#352F2F"
+                                       Text="Thông tin sinh viên"/>
 
-                        <Border Width="140"
-                                Height="140"
-                                Margin="0,24,0,16"
-                                Background="#F1ECE8"
-                                CornerRadius="18">
-                            <TextBlock HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontFamily="Segoe MDL2 Assets" 
-                                       FontSize="64" 
-                                       Text="&#xE77B;" 
-                                       Foreground="#6E6764"/>
-                        </Border>
+                            <Border Width="140"
+                                    Height="140"
+                                    Margin="0,24,0,16"
+                                    Background="#F1ECE8"
+                                    CornerRadius="18"
+                                    ClipToBounds="True">
+                                <Grid>
+                                    <!-- Placeholder icon (visible when no photo) -->
+                                    <TextBlock x:Name="PhotoPlaceholderIcon"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="64"
+                                               Text="&#xE77B;"
+                                               Foreground="#6E6764"/>
+                                    <!-- Student photo -->
+                                    <Image x:Name="StudentPhotoImage"
+                                           Stretch="UniformToFill"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
 
-                        <TextBlock x:Name="StudentNameText"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Text=""
-                                   HorizontalAlignment="Center" />
+                            <TextBlock x:Name="StudentNameText"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Text=""
+                                       HorizontalAlignment="Center"/>
 
-                        <TextBlock x:Name="StudentCodeText"
-                                   Margin="0,4,0,0"
-                                   FontSize="16"
-                                   Foreground="#6E6764"
-                                   Text=""
-                                   HorizontalAlignment="Center" />
+                            <TextBlock x:Name="StudentCodeText"
+                                       Margin="0,4,0,0"
+                                       FontSize="16"
+                                       Foreground="#6E6764"
+                                       Text=""
+                                       HorizontalAlignment="Center"/>
 
-                        <TextBlock x:Name="NfcUidText"
-                                   Margin="0,16,0,0"
-                                   FontSize="14"
-                                   Foreground="#6E6764"
-                                   Text=""
-                                   HorizontalAlignment="Center" />
-                    </StackPanel>
-                </Border>
+                            <TextBlock x:Name="NfcUidText"
+                                       Margin="0,16,0,0"
+                                       FontSize="14"
+                                       Foreground="#6E6764"
+                                       Text=""
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Finance / Stats Section -->
-                <Border Background="#C0C0C0"
-                        CornerRadius="18"
-                        Padding="24"
-                        MinHeight="180">
-                    <TextBlock FontSize="18"
-                               FontWeight="Bold"
-                               Text="Thêm 1 section cho tài chính"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
+                    <!-- Finance History Section -->
+                    <Border Background="White"
+                            CornerRadius="18"
+                            Padding="20"
+                            Margin="0,8,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#352F2F"
+                                       Text="Lịch sử tài chính" />
+
+                            <!-- Unpaid section -->
+                            <TextBlock Grid.Row="2"
+                                       FontWeight="SemiBold"
+                                       FontSize="13"
+                                       Foreground="{StaticResource DangerBrush}"
+                                       Text="Chưa thanh toán" />
+                            <DataGrid x:Name="UnpaidTransactionsGrid"
+                                      Grid.Row="3"
+                                      Style="{StaticResource AppDataGridStyle}"
+                                      IsReadOnly="True"
+                                      Margin="0,4,0,0"
+                                      RowHeight="34"
+                                      ColumnHeaderHeight="32"
+                                      MinHeight="100">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="85" Header="Ngày" Binding="{Binding TransactionDate, StringFormat=\{0:dd/MM/yyyy\}}" />
+                                    <DataGridTextColumn Width="*" Header="Nội dung" Binding="{Binding Description}" />
+                                    <DataGridTextColumn Width="85" Header="Số tiền" Binding="{Binding Amount, StringFormat=\{0:N0\}}" />
+                                    <DataGridTemplateColumn Width="70" Header="">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="✓ Thu"
+                                                        FontSize="11"
+                                                        Padding="6,2"
+                                                        Cursor="Hand"
+                                                        Foreground="{StaticResource SuccessBrush}"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Click="MarkAsPaidButton_Click" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- Paid section -->
+                            <TextBlock Grid.Row="5"
+                                       FontWeight="SemiBold"
+                                       FontSize="13"
+                                       Foreground="{StaticResource SuccessBrush}"
+                                       Text="Đã thanh toán" />
+                            <DataGrid x:Name="PaidTransactionsGrid"
+                                      Grid.Row="6"
+                                      Style="{StaticResource AppDataGridStyle}"
+                                      IsReadOnly="True"
+                                      Margin="0,4,0,0"
+                                      RowHeight="34"
+                                      ColumnHeaderHeight="32"
+                                      MinHeight="100">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="85" Header="Ngày" Binding="{Binding TransactionDate, StringFormat=\{0:dd/MM/yyyy\}}" />
+                                    <DataGridTextColumn Width="*" Header="Nội dung" Binding="{Binding Description}" />
+                                    <DataGridTextColumn Width="85" Header="Số tiền" Binding="{Binding Amount, StringFormat=\{0:N0\}}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
-        
+
         <!-- DEBUG: Firebase status bar -->
-        <Border Grid.Row="3" Margin="0,16,0,0" Background="#1E1E1E" CornerRadius="8" Padding="12,8">
+        <Border Grid.Row="3"
+                Margin="0,16,0,0"
+                Background="#1E1E1E"
+                CornerRadius="8"
+                Padding="12,8">
             <TextBlock x:Name="NfcStatusText"
                        Text="⏳ Khởi động..."
                        Foreground="#A8FF78"
                        FontFamily="Consolas"
-                       FontSize="13" />
+                       FontSize="13"/>
         </Border>
     </Grid>
 </Window>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -111,6 +111,9 @@ public partial class WpfclubManagementDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
+            entity.Property(e => e.PaymentStatus)
+                .HasMaxLength(20)
+                .HasDefaultValue("Paid");
             entity.Property(e => e.StudentId).HasColumnName("StudentID");
             entity.Property(e => e.TransactionDate)
                 .HasDefaultValueSql("(getdate())")

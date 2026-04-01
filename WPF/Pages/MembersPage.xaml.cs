@@ -18,6 +18,10 @@ public partial class MembersPage : UserControl
     public MembersPage()
     {
         InitializeComponent();
+    }
+
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
         LoadMembers();
         UpdateSelectionState();
     }

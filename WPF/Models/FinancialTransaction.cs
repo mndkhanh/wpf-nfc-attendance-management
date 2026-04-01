@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace WPF.Models;
@@ -20,6 +20,8 @@ public partial class FinancialTransaction
     public string? Description { get; set; }
 
     public string? PaymentMethod { get; set; }
+
+    public string PaymentStatus { get; set; } = "Paid";
 
     public DateTime? CreatedAt { get; set; }
 

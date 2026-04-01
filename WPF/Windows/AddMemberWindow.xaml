@@ -7,9 +7,8 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Background="#E7E0DB">
-    <Border Margin="24"
+    <Border Margin="0,0,0,0"
             Background="White"
-            CornerRadius="20"
             Padding="24">
         <Grid>
             <Grid.RowDefinitions>
@@ -28,6 +27,7 @@
                     <ColumnDefinition Width="170" />
                     <ColumnDefinition Width="28" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="FinanceColumnDef" Width="0" />
                 </Grid.ColumnDefinitions>
 
                 <StackPanel>
@@ -122,6 +122,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="NfcUidTextBox" 
                                  Style="{StaticResource InputTextBoxStyle}"
@@ -137,6 +138,18 @@
                             <TextBlock FontFamily="Segoe MDL2 Assets" 
                                        FontSize="16" 
                                        Text="&#xE946;" />
+                        </Button>
+                        <Button x:Name="EraseNfcButton"
+                                Grid.Column="2"
+                                Margin="4,0,0,0"
+                                Width="40"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="EraseNfcButton_Click"
+                                Foreground="{StaticResource DangerBrush}"
+                                ToolTip="Xóa mã NFC UID">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="14" 
+                                       Text="&#xE74D;" />
                         </Button>
                     </Grid>
 
@@ -155,24 +168,109 @@
                         <ComboBoxItem Content="Active" />
                         <ComboBoxItem Content="Inactive" />
                     </ComboBox>
+
+                    <StackPanel Grid.Row="5"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right" Margin="0,57,0,-57">
+                        <Button Width="110"
+                                Margin="0,0,12,0"
+                                Height="30"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Content="Hủy"
+                                IsCancel="True" />
+                        <Button x:Name="ConfirmButton"
+                                Width="120"
+                                Height="30"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Content="Xác nhận"
+                                Click="ConfirmButton_Click" />
+                    </StackPanel>
                 </Grid>
+
+                <!-- Financial History Panel (edit mode only) -->
+                <Border x:Name="FinanceHistoryPanel"
+                        Grid.Column="3"
+                        Margin="20,0,0,0"
+                        Padding="16"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="14"
+                        Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Style="{StaticResource SectionTitleStyle}"
+                                   Text="Lịch sử tài chính" />
+
+                        <!-- Unpaid section -->
+                        <TextBlock Grid.Row="2"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   Text="Chưa thanh toán" />
+                        <DataGrid x:Name="UnpaidTransactionsGrid"
+                                  Grid.Row="3"
+                                  Style="{StaticResource AppDataGridStyle}"
+                                  IsReadOnly="True"
+                                  Margin="0,4,0,0"
+                                  RowHeight="34"
+                                  ColumnHeaderHeight="32"
+                                  MinHeight="80">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="100" Header="Ngày" Binding="{Binding TransactionDate, StringFormat=\{0:dd/MM/yyyy\}}" />
+                                <DataGridTextColumn Width="*" Header="Nội dung" Binding="{Binding Description}" />
+                                <DataGridTextColumn Width="100" Header="Số tiền" Binding="{Binding Amount, StringFormat=\{0:N0\}}" />
+                                <DataGridTemplateColumn Width="70" Header="">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="✓ Thu"
+                                                    FontSize="11"
+                                                    Padding="6,2"
+                                                    Cursor="Hand"
+                                                    Foreground="{StaticResource SuccessBrush}"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Click="MarkAsPaidButton_Click" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Paid section -->
+                        <TextBlock Grid.Row="5"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   Foreground="{StaticResource SuccessBrush}"
+                                   Text="Đã thanh toán" />
+                        <DataGrid x:Name="PaidTransactionsGrid"
+                                  Grid.Row="6"
+                                  Style="{StaticResource AppDataGridStyle}"
+                                  IsReadOnly="True"
+                                  Margin="0,4,0,0"
+                                  RowHeight="34"
+                                  ColumnHeaderHeight="32"
+                                  MinHeight="80">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="100" Header="Ngày" Binding="{Binding TransactionDate, StringFormat=\{0:dd/MM/yyyy\}}" />
+                                <DataGridTextColumn Width="*" Header="Nội dung" Binding="{Binding Description}" />
+                                <DataGridTextColumn Width="100" Header="Số tiền" Binding="{Binding Amount, StringFormat=\{0:N0\}}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
             </Grid>
 
-            <StackPanel Grid.Row="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Width="110"
-                        Margin="0,0,12,0"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Content="Hủy"
-                        IsCancel="True" />
-                <Button x:Name="ConfirmButton"
-                        Width="120"
-                        Height="30"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Content="Xác nhận"
-                        Click="ConfirmButton_Click" />
-            </StackPanel>
+
         </Grid>
     </Border>
 </Window>

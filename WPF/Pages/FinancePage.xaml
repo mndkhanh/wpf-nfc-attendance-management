@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <Style x:Key="FinanceActionButtonStyle"
                TargetType="Button"
@@ -40,24 +41,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!--<StackPanel>
-                <TextBlock Style="{StaticResource PageTitleStyle}"
-                           Text="Các khoản thu/ chi tài chính" />
-                <TextBlock Margin="0,8,0,0"
-                           FontWeight="SemiBold">
-                    <Run Text="Tổng số dư: " />
-                    <Run x:Name="TotalBalanceRun"
-                         Foreground="{StaticResource SuccessBrush}"
-                         Text="+ 8.200.000" />
-                </TextBlock>
-            </StackPanel>-->
-            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
-                <TextBlock FontWeight="SemiBold" Text="Tổng số dư: " />
-                <TextBlock x:Name="TotalBalanceRun"
-               FontWeight="SemiBold"
-               Foreground="{StaticResource SuccessBrush}"
-               Text="" />
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,14" Grid.RowSpan="2">
+                <TextBlock FontWeight="Bold"
+                           Style="{StaticResource PageTitleStyle}"
+               Text="Danh sách các tài khoản mục tài chính" />
             </StackPanel>
+            
+            
 
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
@@ -78,11 +68,12 @@
         </Grid>
 
         <Border Grid.Row="2"
-                Background="#B8B8B8"
-                BorderBrush="#A7A7A7"
-                BorderThickness="1"
-                Padding="18">
+                Style="{StaticResource CardBorderStyle}">
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="317*"/>
+                    <ColumnDefinition Width="27*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="16" />
@@ -91,46 +82,33 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <ItemsControl x:Name="RecentTransactionsList">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="0,0,0,12"
-                                    Padding="20,18"
-                                    Background="White">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
 
-                                    <TextBlock VerticalAlignment="Center"
-                                               FontSize="14"
-                                               FontWeight="SemiBold"
-                                               Foreground="#2E2E2E"
-                                               Text="{Binding Description}"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Grid.Column="1"
-                                               Margin="18,0,0,0"
-                                               VerticalAlignment="Center"
-                                               FontSize="14"
-                                               FontWeight="Bold"
-                                               Foreground="{Binding AmountBrush}"
-                                               Text="{Binding AmountDisplay}" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <StackPanel Grid.Row="2">
-                    <TextBlock FontWeight="Bold"
-                               Foreground="#3A3535"
-                               Text="Danh sách các tài khoản mục tài chính" />
+                <!--<StackPanel>
+                    <TextBlock Style="{StaticResource PageTitleStyle}"
+                                Text="Các khoản thu/ chi tài chính" />
+                    <TextBlock Margin="0,8,0,0"
+                                FontWeight="SemiBold">
+                        <Run Text="Tổng số dư: " />
+                        <Run x:Name="TotalBalanceRun"
+                                Foreground="{StaticResource SuccessBrush}"
+                                Text="+ 8.200.000" />
+                    </TextBlock>
+                </StackPanel>-->
+                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                    <TextBlock FontWeight="SemiBold" Text="Tổng số dư: " />
+                    <TextBlock x:Name="TotalBalanceRun"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource SuccessBrush}"
+                    Text="" />
                 </StackPanel>
+
 
                 <DataGrid x:Name="FinanceGrid"
                           Grid.Row="4"
-                          Style="{StaticResource FinanceListGridStyle}">
+                          IsReadOnly="True"
+                          Style="{StaticResource AppDataGridStyle}"
+                          Grid.ColumnSpan="2"
+                          MouseDoubleClick="FinanceGrid_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="110"
                                             Header="Ngày"
@@ -152,6 +130,9 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTextColumn Width="250"
+                                            Header="Ghi chú"
+                                            Binding="{Binding Note}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

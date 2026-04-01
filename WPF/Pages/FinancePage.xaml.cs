@@ -25,7 +25,10 @@ public partial class FinancePage : UserControl
 
         _financeItems = [];
         FinanceGrid.ItemsSource = _financeItems;
+    }
 
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
         LoadFinanceData();
     }
 
@@ -74,12 +77,17 @@ public partial class FinancePage : UserControl
 
         if (dialog.ShowDialog() == true)
         {
-            AddTransactionToDatabase(
-                transactionType: IncomeType,
-                category: "Phí thành viên",
-                description: $"{dialog.SubmittedFeeName} - {dialog.SubmittedStudentDisplay}",
-                amount: dialog.SubmittedAmount,
-                studentId: dialog.SubmittedStudentId);
+            foreach (var student in dialog.SelectedStudents)
+            {
+                AddTransactionToDatabase(
+                    transactionType: IncomeType,
+                    category: "Phí thành viên",
+                    description: $"{dialog.SubmittedFeeName} - {student.DisplayName}",
+                    amount: dialog.SubmittedAmount,
+                    transactionDate: null, // Fee creation date defaults to Now
+                    studentId: student.StudentId,
+                    paymentStatus: "Unpaid");
+            }
         }
     }
 
@@ -133,7 +141,7 @@ public partial class FinancePage : UserControl
         }
     }
 
-    private void AddTransactionToDatabase(string transactionType, string category, string description, decimal amount, int? studentId)
+    private void AddTransactionToDatabase(string transactionType, string category, string description, decimal amount, int? studentId, DateTime? transactionDate = null, string paymentStatus = "Paid")
     {
         try
         {
@@ -145,8 +153,9 @@ public partial class FinancePage : UserControl
                 TransactionType = transactionType,
                 Category = category,
                 Amount = amount,
-                TransactionDate = DateTime.Now,
+                TransactionDate = transactionDate ?? DateTime.Now,
                 Description = description,
+                PaymentStatus = paymentStatus,
             };
 
             db.FinancialTransactions.Add(transaction);
@@ -188,13 +197,20 @@ public partial class FinancePage : UserControl
             ? transaction.Category
             : transaction.Description;
 
+        var note = (transaction.StudentId != null && transaction.PaymentStatus == "Unpaid")
+            ? "Sinh viên chưa hoàn thành nghĩa vụ tài chính"
+            : string.Empty;
+
         return new FinanceItem
         {
+            TransactionId   = transaction.TransactionId,
             TransactionDate = transaction.TransactionDate.ToString("dd/MM/yyyy"),
-            Category = transaction.Category,
-            Description = description,
-            AmountDisplay = FormatSignedAmount(transaction.Amount, isIncome),
-            AmountBrush = isIncome ? "#2E9E46" : "#E24537",
+            Category        = transaction.Category,
+            Description     = description,
+            AmountDisplay   = FormatSignedAmount(transaction.Amount, isIncome),
+            AmountBrush     = isIncome ? "#2E9E46" : "#E24537",
+            PaymentStatus   = transaction.PaymentStatus,
+            Note            = note,
         };
     }
 
@@ -212,7 +228,6 @@ public partial class FinancePage : UserControl
 
     private void RefreshRecentTransactions()
     {
-        RecentTransactionsList.ItemsSource = _financeItems.Take(2).ToList();
     }
 
     private void UpdateTotalBalance()
@@ -227,5 +242,21 @@ public partial class FinancePage : UserControl
     {
         var formattedAmount = amount.ToString("#,0", CultureInfo.InvariantCulture).Replace(",", ".");
         return $"{(isPositive ? "+" : "-")} {formattedAmount}";
+    }
+    private void FinanceGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (FinanceGrid.SelectedItem is not FinanceItem selectedItem) return;
+
+        var dialog = new FinanceEditWindow(selectedItem.TransactionId)
+        {
+            Owner = Window.GetWindow(this),
+        };
+
+        dialog.ShowDialog();
+
+        if (dialog.DataChanged)
+        {
+            LoadFinanceData();
+        }
     }
 }

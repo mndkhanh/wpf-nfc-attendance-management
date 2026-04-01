@@ -13,6 +13,10 @@ public partial class DashboardPage : UserControl
     public DashboardPage()
     {
         InitializeComponent();
+    }
+
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
         LoadDashboardData();
     }
 

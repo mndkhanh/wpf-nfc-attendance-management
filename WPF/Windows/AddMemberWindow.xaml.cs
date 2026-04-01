@@ -317,6 +317,12 @@ public partial class AddMemberWindow : Window
         StartNfcScan();
     }
 
+    private void EraseNfcButton_Click(object sender, RoutedEventArgs e)
+    {
+        StopNfcScan();
+        NfcUidTextBox.Text = string.Empty;
+    }
+
     private void StartNfcScan()
     {
         _nfcCancel = new CancellationTokenSource();
@@ -419,6 +425,13 @@ public partial class AddMemberWindow : Window
         Title = isEditMode ? "Cập nhật thành viên" : "Đăng ký thành viên";
         WindowHeaderTextBlock.Text = isEditMode ? "Cập nhật thành viên" : "Đăng ký thành viên mới";
         ConfirmButton.Content = isEditMode ? "Lưu" : "Xác nhận";
+
+        if (isEditMode)
+        {
+            Width = 1100;
+            FinanceColumnDef.Width = new GridLength(1, GridUnitType.Star);
+            FinanceHistoryPanel.Visibility = Visibility.Visible;
+        }
     }
 
     private void LoadStudentForEdit(int studentId)
@@ -446,6 +459,8 @@ public partial class AddMemberWindow : Window
             _currentStoredPhotoPath = student.PhotoPath;
             SelectStatus(student.Status);
             UpdatePhotoPreview(StudentPhotoStorage.ResolvePhotoPath(student.PhotoPath));
+
+            LoadStudentTransactions(studentId);
         }
         catch (Exception ex)
         {
@@ -543,5 +558,60 @@ public partial class AddMemberWindow : Window
         bitmap.EndInit();
         bitmap.Freeze();
         return bitmap;
+    }
+
+    // ──────────────────────────────────────────────────────
+    //  Financial transaction history
+    // ──────────────────────────────────────────────────────
+
+    private void LoadStudentTransactions(int studentId)
+    {
+        try
+        {
+            using var db = new WpfclubManagementDbContext();
+            var transactions = db.FinancialTransactions
+                .AsNoTracking()
+                .Where(t => t.StudentId == studentId)
+                .OrderByDescending(t => t.TransactionDate)
+                .ToList();
+
+            UnpaidTransactionsGrid.ItemsSource = transactions
+                .Where(t => t.PaymentStatus == "Unpaid")
+                .ToList();
+
+            PaidTransactionsGrid.ItemsSource = transactions
+                .Where(t => t.PaymentStatus != "Unpaid")
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi tải lịch sử tài chính: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void MarkAsPaidButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.Button btn) return;
+        if (btn.DataContext is not FinancialTransaction tx) return;
+
+        try
+        {
+            using var db = new WpfclubManagementDbContext();
+            var dbTx = db.FinancialTransactions.Find(tx.TransactionId);
+            if (dbTx == null) return;
+
+            dbTx.PaymentStatus = "Paid";
+            dbTx.TransactionDate = DateTime.Now;
+            db.SaveChanges();
+
+            if (_studentId.HasValue)
+            {
+                LoadStudentTransactions(_studentId.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi cập nhật trạng thái: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

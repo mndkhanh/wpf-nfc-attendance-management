@@ -9,16 +9,39 @@ namespace WPF.Windows;
 
 public partial class MemberFeeWindow : Window
 {
-    private sealed class StudentOption
+    public class StudentSelection
     {
         public int StudentId { get; init; }
         public string DisplayName { get; init; } = string.Empty;
     }
 
+    private class StudentOption : System.ComponentModel.INotifyPropertyChanged
+    {
+        private bool _isSelected;
+        public int StudentId { get; init; }
+        public string DisplayName { get; init; } = string.Empty;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(IsSelected)));
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+    }
+
+    private List<StudentOption> _allStudents = new();
+
     public string SubmittedFeeName { get; private set; } = string.Empty;
-    public string SubmittedStudentDisplay { get; private set; } = string.Empty;
-    public int SubmittedStudentId { get; private set; }
     public decimal SubmittedAmount { get; private set; }
+    public List<StudentSelection> SelectedStudents { get; private set; } = new();
 
     public MemberFeeWindow()
     {
@@ -31,7 +54,7 @@ public partial class MemberFeeWindow : Window
         try
         {
             using var db = new WpfclubManagementDbContext();
-            List<StudentOption> students = db.Students
+            _allStudents = db.Students
                 .AsNoTracking()
                 .OrderBy(s => s.FullName)
                 .Select(s => new StudentOption
@@ -41,12 +64,28 @@ public partial class MemberFeeWindow : Window
                 })
                 .ToList();
 
-            StudentComboBox.ItemsSource = students;
-            StudentComboBox.SelectedIndex = -1;
+            StudentListBox.ItemsSource = _allStudents;
         }
         catch (System.Exception ex)
         {
             ShowValidationMessage($"Không tải được danh sách sinh viên.\n{ex.Message}");
+        }
+    }
+
+    private void SearchTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        if (_allStudents == null) return;
+
+        string searchText = SearchTextBox.Text.Trim().ToLower();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            StudentListBox.ItemsSource = _allStudents;
+        }
+        else
+        {
+            StudentListBox.ItemsSource = _allStudents
+                .Where(s => s.DisplayName.ToLower().Contains(searchText))
+                .ToList();
         }
     }
 
@@ -69,18 +108,21 @@ public partial class MemberFeeWindow : Window
             return;
         }
 
-        if (StudentComboBox.SelectedItem is not StudentOption selectedStudent ||
-            string.IsNullOrWhiteSpace(selectedStudent.DisplayName))
+        var selectedItems = _allStudents.Where(s => s.IsSelected).ToList();
+        if (selectedItems.Count == 0)
         {
-            ShowValidationMessage("Vui lòng chọn sinh viên.");
-            StudentComboBox.Focus();
+            ShowValidationMessage("Vui lòng chọn ít nhất một sinh viên.");
             return;
         }
 
         SubmittedFeeName = feeName;
-        SubmittedStudentDisplay = selectedStudent.DisplayName;
-        SubmittedStudentId = selectedStudent.StudentId;
         SubmittedAmount = amount;
+        SelectedStudents = selectedItems.Select(s => new StudentSelection
+        {
+            StudentId = s.StudentId,
+            DisplayName = s.DisplayName
+        }).ToList();
+
         DialogResult = true;
     }
 

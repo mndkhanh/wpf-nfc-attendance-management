@@ -72,9 +72,10 @@ CREATE TABLE dbo.Financial_Transactions (
     TransactionType NVARCHAR(20) NOT NULL,
     Category NVARCHAR(100) NOT NULL,
     Amount DECIMAL(18,2) NOT NULL,
-    TransactionDate DATETIME NOT NULL DEFAULT GETDATE(),
+    TransactionDate DATETIME NULL,
     Description NVARCHAR(500) NULL,
     PaymentMethod NVARCHAR(50) NULL,
+    PaymentStatus NVARCHAR(20) NOT NULL DEFAULT N'Paid',
     CreatedAt DATETIME DEFAULT GETDATE(),
 
     CONSTRAINT FK_Financial_Students FOREIGN KEY (StudentID)

@@ -23,7 +23,7 @@ INSERT INTO dbo.AttendanceSessions (SessionID, SessionName, StartTime, EndTime, 
 VALUES
 (1, N'Buổi tập cơ bản thứ 3', '2024-03-20 18:00:00', '2024-03-20 20:30:00', N'Completed', N'Khởi động, kỹ thuật cơ bản'),
 (2, N'Buổi tập nâng cao thứ 5', '2024-03-22 18:00:00', '2024-03-22 20:30:00', N'Completed', N'Đối kháng, thể lực'),
-(3, N'Buổi tập chuẩn bị thi đấu', '2024-03-25 18:00:00', NULL, N'Active', N'Chiến thuật thi đấu');
+(3, N'Buổi tập chuẩn bị thi đấu', '2024-03-25 18:00:00', NULL, N'Completed', N'Chiến thuật thi đấu');
 SET IDENTITY_INSERT dbo.AttendanceSessions OFF;
 GO
 

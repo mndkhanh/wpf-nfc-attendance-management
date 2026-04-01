@@ -6,7 +6,7 @@
         Height="250"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Background="#B6B6B6">
+        Background="#FFFFFF">
     <Window.Resources>
         <Style x:Key="PopupFieldBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />

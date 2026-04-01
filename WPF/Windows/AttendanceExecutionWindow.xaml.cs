@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -6,8 +7,11 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using Microsoft.EntityFrameworkCore;
 using WPF.Models;
+using WPF.Services;
 
 namespace WPF.Windows;
 
@@ -94,7 +98,7 @@ public partial class AttendanceExecutionWindow : Window
                         catch { /* ignore malformed events */ }
 
                         eventType = null;
-                    }
+                      }
                 }
             }
             catch (Exception ex) when (!token.IsCancellationRequested)
@@ -125,6 +129,7 @@ public partial class AttendanceExecutionWindow : Window
             StudentNameText.Text = student.FullName;
             StudentCodeText.Text = student.StudentCode;
             NfcUidText.Text = "UID: " + student.NfcUid;
+            UpdateStudentPhoto(student.PhotoPath);
 
             bool alreadyCheckedIn = await db.Attendances
                 .AnyAsync(a => a.SessionId == _sessionId && a.StudentId == student.StudentId);
@@ -149,6 +154,9 @@ public partial class AttendanceExecutionWindow : Window
             {
                 NfcStatusText.Text = $"ℹ️ {student.FullName} đã điểm danh rồi.";
             }
+
+            // Load financial history for the identified student
+            LoadStudentTransactions(student.StudentId);
         }
         catch (Exception ex)
         {
@@ -166,13 +174,6 @@ public partial class AttendanceExecutionWindow : Window
                 .Where(a => a.SessionId == _sessionId)
                 .Include(a => a.Student)
                 .OrderByDescending(a => a.CheckInTime)
-                .Select(a => new
-                {
-                    a.Student.StudentCode,
-                    a.Student.FullName,
-                    a.CheckInTime,
-                    a.Note
-                })
                 .ToList();
 
             LiveAttendanceGrid.ItemsSource = records;
@@ -180,6 +181,34 @@ public partial class AttendanceExecutionWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async void LiveAttendanceGrid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+    {
+        if (e.EditAction != DataGridEditAction.Commit) return;
+        if (e.Row.Item is not Attendance editedAttendance) return;
+
+        var newNote = (e.EditingElement as TextBox)?.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(newNote)) newNote = null;
+
+        try
+        {
+            using var db = new WpfclubManagementDbContext();
+            var dbAttendance = await db.Attendances.FindAsync(editedAttendance.AttendanceId);
+            if (dbAttendance == null) return;
+
+            dbAttendance.Note = newNote;
+            await db.SaveChangesAsync();
+
+            // Keep the in-memory entity in sync so UI stays consistent
+            editedAttendance.Note = newNote;
+            NfcStatusText.Text = "✅ Đã lưu ghi chú.";
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi lưu ghi chú: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            LoadAttendance(); // Reload to revert to DB state
         }
     }
 
@@ -210,6 +239,105 @@ public partial class AttendanceExecutionWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Lỗi khi kết thúc buổi tập: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void LiveAttendanceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (LiveAttendanceGrid.SelectedItem is not Attendance selected)
+        {
+            StudentNameText.Text = string.Empty;
+            StudentCodeText.Text = string.Empty;
+            NfcUidText.Text      = string.Empty;
+            UpdateStudentPhoto(null);
+            UnpaidTransactionsGrid.ItemsSource = null;
+            PaidTransactionsGrid.ItemsSource   = null;
+            return;
+        }
+
+        StudentNameText.Text = selected.Student?.FullName    ?? string.Empty;
+        StudentCodeText.Text = selected.Student?.StudentCode ?? string.Empty;
+        NfcUidText.Text      = string.IsNullOrWhiteSpace(selected.Student?.NfcUid)
+            ? string.Empty
+            : "UID: " + selected.Student.NfcUid;
+        UpdateStudentPhoto(selected.Student?.PhotoPath);
+
+        if (selected.StudentId > 0)
+        {
+            LoadStudentTransactions(selected.StudentId);
+        }
+    }
+
+    private void UpdateStudentPhoto(string? storedPhotoPath)
+    {
+        var absolutePath = StudentPhotoStorage.ResolvePhotoPath(storedPhotoPath);
+
+        if (!string.IsNullOrWhiteSpace(absolutePath) && File.Exists(absolutePath))
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = new System.Uri(absolutePath, System.UriKind.Absolute);
+            bitmap.EndInit();
+            bitmap.Freeze();
+
+            StudentPhotoImage.Source = bitmap;
+            PhotoPlaceholderIcon.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            StudentPhotoImage.Source = null;
+            PhotoPlaceholderIcon.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void LoadStudentTransactions(int studentId)
+    {
+        try
+        {
+            using var db = new WpfclubManagementDbContext();
+
+            var unpaid = db.FinancialTransactions
+                .Where(t => t.StudentId == studentId && t.PaymentStatus == "Unpaid")
+                .OrderByDescending(t => t.TransactionDate)
+                .ToList();
+
+            var paid = db.FinancialTransactions
+                .Where(t => t.StudentId == studentId && t.PaymentStatus == "Paid")
+                .OrderByDescending(t => t.TransactionDate)
+                .Take(10) // Show last 10 paid transactions
+                .ToList();
+
+            UnpaidTransactionsGrid.ItemsSource = unpaid;
+            PaidTransactionsGrid.ItemsSource   = paid;
+        }
+        catch (Exception ex)
+        {
+            NfcStatusText.Text = $"⚠️ Lỗi tải tài chính: {ex.Message}";
+        }
+    }
+
+    private void MarkAsPaidButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn || btn.DataContext is not FinancialTransaction tx) return;
+
+        try
+        {
+            using var db = new WpfclubManagementDbContext();
+            var dbTx = db.FinancialTransactions.Find(tx.TransactionId);
+            if (dbTx != null)
+            {
+                dbTx.PaymentStatus = "Paid";
+                dbTx.TransactionDate = DateTime.Now; // Update date to collection date
+                db.SaveChanges();
+
+                NfcStatusText.Text = $"✅ Đã thu phí: {tx.Description}";
+                LoadStudentTransactions(tx.StudentId!.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi cập nhật thanh toán: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

@@ -32,11 +32,14 @@ public sealed class AttendanceRecord
 
 public sealed class FinanceItem
 {
+    public int TransactionId { get; init; }
     public string TransactionDate { get; init; } = string.Empty;
     public string Category { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public string AmountDisplay { get; init; } = string.Empty;
     public string AmountBrush { get; init; } = string.Empty;
+    public string PaymentStatus { get; init; } = string.Empty;
+    public string Note { get; init; } = string.Empty;
 }
 
 public sealed class DashboardMetric

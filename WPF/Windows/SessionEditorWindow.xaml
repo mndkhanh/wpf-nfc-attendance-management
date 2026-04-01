@@ -7,9 +7,8 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Background="#D8D1CC">
-    <Border Margin="24"
+    <Border Margin="0,0,0,2"
             Background="White"
-            CornerRadius="18"
             Padding="24">
         <Grid>
             <Grid.RowDefinitions>
