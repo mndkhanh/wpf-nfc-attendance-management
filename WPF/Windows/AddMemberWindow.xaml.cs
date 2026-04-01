@@ -1,11 +1,18 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
+using FlashCap;
+using FlashCap.Devices;
 using WPF.Models;
 using WPF.Services;
 
@@ -17,6 +24,14 @@ public partial class AddMemberWindow : Window
     private string? _selectedPhotoSourceFilePath;
     private string? _currentStoredPhotoPath;
     private bool _removeExistingPhoto;
+
+    private CaptureDevice? _captureDevice;
+    private bool _isCameraActive;
+
+    private CancellationTokenSource? _nfcCancel;
+    private const string FirebaseUrl = "https://wpf-nfc-attendance-management-default-rtdb.asia-southeast1.firebasedatabase.app";
+    private readonly Brush _normalTextBrush = new SolidColorBrush(Color.FromRgb(53, 47, 47));
+    private readonly Brush _accentBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215));
 
     public AddMemberWindow()
         : this(null)
@@ -38,6 +53,12 @@ public partial class AddMemberWindow : Window
         {
             UpdatePhotoPreview(null);
         }
+
+        this.Closing += (s, e) => 
+        {
+            StopCamera();
+            StopNfcScan();
+        };
     }
 
     private void ConfirmButton_Click(object sender, RoutedEventArgs e)
@@ -166,6 +187,230 @@ public partial class AddMemberWindow : Window
 
         _removeExistingPhoto = !string.IsNullOrWhiteSpace(_currentStoredPhotoPath);
         UpdatePhotoPreview(null);
+    }
+
+    private async void CameraModeButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var devices = new CaptureDevices();
+            var firstDevice = devices.EnumerateDescriptors().FirstOrDefault();
+
+            if (firstDevice == null)
+            {
+                MessageBox.Show("Không tìm thấy Camera nào trên thiết bị.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var characteristics = firstDevice.Characteristics.FirstOrDefault(c => c.PixelFormat == FlashCap.PixelFormats.JPEG)
+                                  ?? firstDevice.Characteristics.FirstOrDefault(c => c.PixelFormat == FlashCap.PixelFormats.PNG)
+                                  ?? firstDevice.Characteristics.OrderByDescending(c => c.Width).FirstOrDefault();
+
+            if (characteristics == null)
+            {
+                MessageBox.Show("Không hỗ trợ định dạng Camera này.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _captureDevice = await firstDevice.OpenAsync(characteristics, OnFrameArrived);
+            await _captureDevice.StartAsync();
+
+            _isCameraActive = true;
+            UpdateUiForCameraMode(true);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi khi khởi động Camera: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            StopCamera();
+        }
+    }
+
+    private void CancelCameraButton_Click(object sender, RoutedEventArgs e)
+    {
+        StopCamera();
+    }
+
+    private void CaptureButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_captureDevice == null || CameraPreviewImage.Source is not BitmapSource bitmapSource) return;
+
+        try
+        {
+            var encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+            var tempPath = Path.Combine(Path.GetTempPath(), $"capture_{Guid.NewGuid():N}.jpg");
+            using (var stream = File.OpenWrite(tempPath))
+            {
+                encoder.Save(stream);
+            }
+
+            _selectedPhotoSourceFilePath = tempPath;
+            _removeExistingPhoto = false;
+            UpdatePhotoPreview(tempPath);
+            StopCamera();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Lỗi khi chụp ảnh: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnFrameArrived(PixelBufferScope scope)
+    {
+        if (!_isCameraActive) return;
+
+        try
+        {
+            // IMPORTANT: Extract the data IMMEDIATELY before the scope is disposed
+            var imageSource = scope.Buffer.ExtractImage();
+
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (!_isCameraActive) return;
+                try
+                {
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = new MemoryStream(imageSource);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+
+                    CameraPreviewImage.Source = bitmap;
+                }
+                catch { /* Ignore UI update errors during shutdown */ }
+            });
+        }
+        catch { /* Ignore extraction errors during shutdown */ }
+    }
+
+    private void StopCamera()
+    {
+        _isCameraActive = false;
+        _captureDevice?.Dispose();
+        _captureDevice = null;
+        Dispatcher.Invoke(() => UpdateUiForCameraMode(false));
+    }
+
+    private void UpdateUiForCameraMode(bool isActive)
+    {
+        CameraPreviewGrid.Visibility = isActive ? Visibility.Visible : Visibility.Collapsed;
+        NormalPhotoGrid.Visibility = isActive ? Visibility.Collapsed : Visibility.Visible;
+        
+        SelectPhotoButton.IsEnabled = !isActive;
+        CameraModeButton.IsEnabled = !isActive;
+        RemovePhotoButton.IsEnabled = !isActive && (!string.IsNullOrWhiteSpace(_selectedPhotoSourceFilePath) || !string.IsNullOrWhiteSpace(_currentStoredPhotoPath));
+        CancelCameraButton.Visibility = isActive ? Visibility.Visible : Visibility.Collapsed;
+        
+        ConfirmButton.IsEnabled = !isActive;
+    }
+
+    private void ScanNfcButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_nfcCancel != null)
+        {
+            StopNfcScan();
+            return;
+        }
+
+        StartNfcScan();
+    }
+
+    private void StartNfcScan()
+    {
+        _nfcCancel = new CancellationTokenSource();
+        Task.Run(() => ListenNfcSse(_nfcCancel.Token));
+        
+        NfcUidTextBox.Background = new SolidColorBrush(Color.FromRgb(232, 244, 253));
+        NfcUidTextBox.Text = "Đang chờ thẻ NFC...";
+        ScanNfcButton.Background = _accentBrush;
+        ((TextBlock)ScanNfcButton.Content).Foreground = Brushes.White;
+    }
+
+    private void StopNfcScan()
+    {
+        _nfcCancel?.Cancel();
+        _nfcCancel = null;
+
+        Dispatcher.Invoke(() =>
+        {
+            NfcUidTextBox.Background = new SolidColorBrush(Color.FromRgb(240, 241, 253));
+            ScanNfcButton.Background = Brushes.Transparent;
+            ((TextBlock)ScanNfcButton.Content).Foreground = _normalTextBrush;
+            
+            if (NfcUidTextBox.Text == "Đang chờ thẻ NFC...")
+            {
+                NfcUidTextBox.Text = string.Empty;
+            }
+        });
+    }
+
+    private async Task ListenNfcSse(CancellationToken token)
+    {
+        using var http = new HttpClient();
+        http.Timeout = Timeout.InfiniteTimeSpan;
+
+        while (!token.IsCancellationRequested)
+        {
+            try
+            {
+                // Erase any old data before starting the new stream
+                _ = await http.DeleteAsync($"{FirebaseUrl}/current_uid.json", token);
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, $"{FirebaseUrl}/current_uid.json");
+                request.Headers.Add("Accept", "text/event-stream");
+
+                using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+                using var stream = await response.Content.ReadAsStreamAsync(token);
+                using var reader = new StreamReader(stream);
+
+                string? eventType = null;
+
+                while (!token.IsCancellationRequested)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (line == null) break;
+
+                    if (line.StartsWith("event:"))
+                    {
+                        eventType = line[6..].Trim();
+                    }
+                    else if (line.StartsWith("data:") && eventType == "put")
+                    {
+                        var raw = line[5..].Trim();
+
+                        try
+                        {
+                            using var doc = JsonDocument.Parse(raw);
+                            var dataEl = doc.RootElement.GetProperty("data");
+
+                            string? uid = dataEl.ValueKind == JsonValueKind.String
+                                ? dataEl.GetString()
+                                : null;
+
+                            if (!string.IsNullOrWhiteSpace(uid))
+                            {
+                                _ = http.DeleteAsync($"{FirebaseUrl}/current_uid.json", token);
+                                Dispatcher.Invoke(() =>
+                                {
+                                    NfcUidTextBox.Text = uid!;
+                                    System.Media.SystemSounds.Beep.Play();
+                                    StopNfcScan();
+                                });
+                            }
+                        }
+                        catch { /* ignore malformed events */ }
+
+                        eventType = null;
+                    }
+                }
+            }
+            catch (Exception) when (!token.IsCancellationRequested)
+            {
+                await Task.Delay(2000, token);
+            }
+        }
     }
 
     private void ConfigureWindowMode()

@@ -51,6 +51,9 @@ public partial class AttendanceExecutionWindow : Window
         {
             try
             {
+                // Clear any old/stale UID before starting the stream
+                _ = await http.DeleteAsync($"{FirebaseUrl}/current_uid.json", token);
+
                 using var request = new HttpRequestMessage(HttpMethod.Get, $"{FirebaseUrl}/current_uid.json");
                 request.Headers.Add("Accept", "text/event-stream");
 

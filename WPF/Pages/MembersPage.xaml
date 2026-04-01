@@ -122,41 +122,11 @@
                           Margin="0,10,0,0"
                           Style="{StaticResource AppDataGridStyle}"
                           IsReadOnly="True"
-                          RowHeight="72"
                           SelectionMode="Single"
                           SelectionChanged="MembersGrid_SelectionChanged"
-                          MouseDoubleClick="MembersGrid_MouseDoubleClick">
+                          MouseDoubleClick="MembersGrid_MouseDoubleClick"
+                          RowHeight="40">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Width="92"
-                                                Header="Ảnh">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Grid HorizontalAlignment="Center"
-                                          VerticalAlignment="Center">
-                                        <Border Width="52"
-                                                Height="52"
-                                                Background="#F4ECE7"
-                                                BorderBrush="{StaticResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="14">
-                                            <Viewbox Margin="14"
-                                                     Stretch="Uniform">
-                                                <TextBlock FontFamily="Segoe MDL2 Assets"
-                                                           Foreground="{StaticResource MutedBrush}"
-                                                           Text="&#xE77B;" />
-                                            </Viewbox>
-                                        </Border>
-                                        <Border Width="52"
-                                                Height="52"
-                                                CornerRadius="14"
-                                                ClipToBounds="True">
-                                            <Image Source="{Binding PhotoPath, Converter={StaticResource StudentPhotoThumbnailConverter}}"
-                                                   Stretch="UniformToFill" />
-                                        </Border>
-                                    </Grid>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
                         <DataGridTextColumn Width="130"
                                             Header="MSSV"
                                             Binding="{Binding StudentCode}" />
