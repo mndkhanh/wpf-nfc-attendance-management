@@ -32,12 +32,14 @@ public partial class WpfclubManagementDbContext : DbContext
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .Build();
-        if (config != null)
+
+        var connectionString = config.GetConnectionString("DefaultConnection");
+        if (!string.IsNullOrWhiteSpace(connectionString))
         {
-            string? strconn = config.GetConnectionString("DefaultConnection");
-            return strconn!;
+            return connectionString;
         }
-        return null;
+
+        throw new InvalidOperationException("Khong tim thay ConnectionStrings:DefaultConnection trong appsettings.json.");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -145,6 +147,7 @@ public partial class WpfclubManagementDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.PhotoPath).HasMaxLength(260);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasDefaultValue("Active");
