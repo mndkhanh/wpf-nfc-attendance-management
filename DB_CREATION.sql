@@ -20,7 +20,7 @@ CREATE TABLE dbo.Students (
     StudentID INT IDENTITY(1,1) PRIMARY KEY,
     StudentCode VARCHAR(20) NOT NULL UNIQUE,
     FullName NVARCHAR(100) NOT NULL,
-    NFC_UID VARCHAR(100) NULL UNIQUE,
+    NFC_UID VARCHAR(100) NULL,
     Phone VARCHAR(20) NULL,
     Email VARCHAR(100) NULL,
     PhotoPath NVARCHAR(260) NULL,
@@ -29,6 +29,12 @@ CREATE TABLE dbo.Students (
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE()
 );
+GO
+
+-- Filtered Index: Allow multiple NULLs but enforce uniqueness for non-null UIDs
+CREATE UNIQUE NONCLUSTERED INDEX IX_Students_NFC_UID
+    ON dbo.Students(NFC_UID)
+    WHERE NFC_UID IS NOT NULL;
 GO
 
 CREATE TABLE dbo.AttendanceSessions (
