@@ -84,9 +84,17 @@ public partial class AttendancePage : UserControl
             Owner = Window.GetWindow(this),
         };
 
-        if (dialog.ShowDialog() == true)
+        if (dialog.ShowDialog() == true && dialog.CreatedSession != null)
         {
-            LoadSessions();
+            var oldWindow = Window.GetWindow(this);
+            var executionWindow = new AttendanceExecutionWindow(dialog.CreatedSession);
+            
+            // Re-assign MainWindow BEFORE closing the old one
+            Application.Current.MainWindow = executionWindow;
+            executionWindow.Show();
+            
+            // Close the old one
+            oldWindow?.Close();
         }
     }
 

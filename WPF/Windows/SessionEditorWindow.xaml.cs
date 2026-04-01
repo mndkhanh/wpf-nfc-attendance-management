@@ -6,6 +6,8 @@ namespace WPF.Windows;
 
 public partial class SessionEditorWindow : Window
 {
+    public AttendanceSession? CreatedSession { get; private set; }
+
     public SessionEditorWindow()
     {
         InitializeComponent();
@@ -35,6 +37,8 @@ public partial class SessionEditorWindow : Window
 
             db.AttendanceSessions.Add(newSession);
             db.SaveChanges();
+
+            CreatedSession = newSession;
 
             DialogResult = true;
             Close();
