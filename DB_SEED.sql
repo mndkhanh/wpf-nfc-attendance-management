@@ -10,11 +10,11 @@ GO
 SET IDENTITY_INSERT dbo.Students ON;
 INSERT INTO dbo.Students (StudentID, StudentCode, FullName, NFC_UID, Phone, Email, PhotoPath, [Status], JoinedDate)
 VALUES
-(1, 'SE150111', N'Nguyễn Văn An', '044B2A82C75E80', '0901234567', 'an.nv@gmail.com', NULL, N'Active', '2023-09-05'),
-(2, 'SE150222', N'Trần Thị Bích', '045C3B93D86F91', '0912345678', 'bich.tt@gmail.com', NULL, N'Active', '2023-09-10'),
-(3, 'SE150333', N'Lê Hoàng Cường', '046D4C04E97002', '0923456789', 'cuong.lh@gmail.com', NULL, N'Active', '2024-01-15'),
-(4, 'SS160444', N'Phạm Nhật Duy', '047E5D15FA8113', '0934567890', 'duy.pn@gmail.com', NULL, N'Active', '2024-02-20'),
-(5, 'SA160555', N'Đỗ Phương Dung', '048F6E260B9224', '0945678901', 'dung.dp@gmail.com', NULL, N'Inactive', '2022-09-01');
+(1, 'SE150111', N'Nguyễn Văn An', '', '0901234567', 'an.nv@gmail.com', NULL, N'Active', '2023-09-05'),
+(2, 'SE150222', N'Trần Thị Bích', '', '0912345678', 'bich.tt@gmail.com', NULL, N'Active', '2023-09-10'),
+(3, 'SE150333', N'Lê Hoàng Cường', '', '0923456789', 'cuong.lh@gmail.com', NULL, N'Active', '2024-01-15'),
+(4, 'SS160444', N'Phạm Nhật Duy', '', '0934567890', 'duy.pn@gmail.com', NULL, N'Active', '2024-02-20'),
+(5, 'SA160555', N'Đỗ Phương Dung', '', '0945678901', 'dung.dp@gmail.com', NULL, N'Inactive', '2022-09-01');
 SET IDENTITY_INSERT dbo.Students OFF;
 GO
 
